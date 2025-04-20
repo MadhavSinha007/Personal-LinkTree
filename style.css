@@ -1,157 +1,324 @@
 @font-face {
-    font-family: "Geist";
-    src: url("https://assets.codepen.io/605876/GeistVF.ttf") format("truetype");
+  font-family: "Geist";
+  src: url("https://assets.codepen.io/605876/GeistVF.ttf") format("truetype");
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --size: 20px;
+  --card-bg: rgba(0, 0, 0, 0.15);
+  --card-border: rgba(255, 255, 255, 0.125);
+  --hover-color: rgba(255, 255, 255, 0.9);
+  --glow-color: rgba(255, 255, 255, 0.15);
+  --text-color: #ffffff;
+  --accent-color: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Geist', 'Poppins', sans-serif;
+  position: relative;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 5vw, 42px);
+  padding: clamp(20px, 5vw, 40px) clamp(10px, 3vw, 20px);
+  overflow-x: hidden;
+}
+
+/** Grid container for background **/
+.grid {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  z-index: -1;
+}
+
+/** Animation element **/
+.el {
+  background: conic-gradient(from 180deg at 50% 70%, #ffffff 0deg, #e0e0e0 72deg, #c0c0c0 144deg, #989898 216deg, #d9d9d9 288deg, #ffffff 1turn);
+  width: 100%;
+  height: 100%;
+  mask:
+    radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px) 50% 50% / var(--size) var(--size),
+    url("https://assets.codepen.io/605876/noise-mask.png") 256px 50% / 256px 256px;
+  -webkit-mask:
+    radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px) 50% 50% / var(--size) var(--size),
+    url("https://assets.codepen.io/605876/noise-mask.png") 256px 50% / 256px 256px;
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  animation: flicker 20s infinite linear;
+}
+
+@keyframes flicker {
+  0% {
+    mask-position: 0 0, 0 0;
+    -webkit-mask-position: 0 0, 0 0;
   }
-  
-  * {
-    box-sizing: border-box;
+  100% {
+    mask-position: var(--size) var(--size), 256px 0;
+    -webkit-mask-position: var(--size) var(--size), 256px 0;
   }
-  
-  :root {
-    --size: 20px;
-    --card-bg: rgba(17, 25, 40, 0.19);
-    --card-border: rgba(255, 255, 255, 0.125);
-    --hover-color: skyblue;
+}
+
+/** Enhanced Card styling applied to header and main **/
+.card,
+header,
+main {
+  backdrop-filter: blur(12px) saturate(110%);
+  -webkit-backdrop-filter: blur(12px) saturate(110%);
+  background-color: var(--card-bg);
+  border-radius: clamp(12px, 2vw, 16px);
+  border: 1px solid var(--card-border);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+header,
+main {
+  padding: clamp(20px, 4vw, 32px) clamp(16px, 3vw, 28px);
+  text-align: center;
+  width: min(90%, 600px);
+  z-index: 1;
+  margin: 0 auto;
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+/* Glass shine effect */
+.card::before,
+header::before,
+main::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.card:hover::before,
+header:hover::before,
+main:hover::before {
+  transform: rotate(0deg);
+}
+
+header:hover,
+main:hover {
+  box-shadow: 
+    0 15px 40px 0 rgba(0, 0, 0, 0.25),
+    0 0 15px 0 var(--glow-color),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transform: translateY(-5px);
+}
+
+header img {
+  width: clamp(100px, 25vw, 150px);
+  height: clamp(100px, 25vw, 150px);
+  border-radius: 50%;
+  margin-bottom: clamp(15px, 3vw, 20px);
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+header:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
+}
+
+header mark {
+  border-radius: 4px;
+  padding: 3px 8px;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+header:hover mark {
+  background: var(--hover-color);
+  color: #000;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: center;
+}
+
+/* Enhanced links */
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(12px, 2vw, 16px) clamp(14px, 2.5vw, 20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: clamp(8px, 1.5vw, 12px);
+  width: 100%;
+  max-width: min(90%, 420px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  color: var(--text-color);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.link:hover {
+  border-color: var(--hover-color);
+  transform: translateY(-3px) scale(1.02);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.2),
+    0 0 10px var(--glow-color);
+}
+
+/* Ripple effect on click */
+.link:active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1);
+  animation: ripple 0.8s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
   }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    position: relative;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 42px;
-    padding: 40px 14px;
-    overflow-y: auto;
+  100% {
+    transform: scale(100);
+    opacity: 0;
   }
-  
-  /* Grid container for background */
-  .grid {
-    display: grid;
-    place-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: hsl(0 0% 6%);
-    z-index: -1;
-  }
-  
-  /* Animation element */
-  .el {
-    background: conic-gradient(from 180deg at 50% 70%,hsla(0,0%,98%,1) 0deg,#eec32d 72.0000010728836deg,#ec4b4b 144.0000021457672deg,#709ab9 216.00000858306885deg,#4dffbf 288.0000042915344deg,hsla(0,0%,98%,1) 1turn);
-    width: 100%;
-    height: 100%;
-    mask:
-      radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px) 50% 50% / var(--size) var(--size),
-      url("https://assets.codepen.io/605876/noise-mask.png") 256px 50% / 256px 256px;
-    -webkit-mask:
-      radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px) 50% 50% / var(--size) var(--size),
-      url("https://assets.codepen.io/605876/noise-mask.png") 256px 50% / 256px 256px;
-    mask-composite: intersect;
-    -webkit-mask-composite: source-in;
-    animation: flicker 20s infinite linear;
-  }
-  
-  @keyframes flicker {
-    0% {
-      mask-position: 0 0, 0 0;
-      -webkit-mask-position: 0 0, 0 0;
-    }
-    100% {
-      mask-position: var(--size) var(--size), 256px 0;
-      -webkit-mask-position: var(--size) var(--size), 256px 0;
-    }
-  }
-  
-  /* Card styling applied to header and main */
-  .card,
-  header,
-  main {
-    backdrop-filter: blur(5px) saturate(84%);
-    -webkit-backdrop-filter: blur(5px) saturate(84%);
-    background-color: rgba(17, 25, 40, 0.19);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-  }
-  
-  header,
-  main {
-    padding: 28px 24px;
-    text-align: center;
-    width: 90%;
-    max-width: 600px;
-    z-index: 1;
-    margin: 0 auto;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-  }
-  
-  header img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-bottom: 20px;
-    object-fit: cover;
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
-  }
-  
-  header mark {
-    border-radius: 4px;
-    padding: 3px 6px;
-    background: white;
-    color: #0f172a;
-    font-weight: 500;
-  }
-  
-  main {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    align-items: center;
-  }
-  
+}
+
+.link p {
+  margin: 0;
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 2px;
+  font-size: clamp(14px, 1vw, 16px);
+}
+
+/* Text underline animation */
+.link p::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--hover-color);
+  transform: translateX(-101%);
+  transition: transform 0.35s ease;
+}
+
+.link:hover p::after {
+  transform: translateX(0);
+}
+
+.link i {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.link:hover i {
+  opacity: 1;
+  transform: translateX(3px);
+  color: var(--hover-color);
+}
+
+/* Button-like link styling */
+.link small {
+  background-color: rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: clamp(0.65rem, 0.75vw, 0.75rem);
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.link:hover small {
+  background-color: var(--hover-color);
+  color: #000;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
   .link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    width: 100%;
-    max-width: 420px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    color: rgb(255, 255, 255);
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.09);
-    backdrop-filter: blur(5px);
-  }
-  
-  .link:hover {
-    border-color: var(--hover-color);
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .link p {
-    margin: 0;
-    font-weight: 400;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    padding: 16px;
   }
   
   .link i {
-    font-size: 1.2rem;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+    margin-top: 8px;
   }
   
-  .link:hover i {
-    opacity: 1;
+  header, main {
+    width: 95%;
   }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .link {
+    padding: 14px 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --size: 25px;
+  }
+  
+  body {
+    gap: 50px;
+  }
+  
+  .link {
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
